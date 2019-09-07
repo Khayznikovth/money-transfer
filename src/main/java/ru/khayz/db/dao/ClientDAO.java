@@ -14,5 +14,9 @@ public class ClientDAO {
         return session.get(ClientSet.class, id);
     }
 
+    public long add(String name) {
+        return (Long) session.save(new ClientSet(name));
+    }
+
 
 }

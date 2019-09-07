@@ -27,7 +27,7 @@ public class ClientSet implements Serializable {
     @Column(name = "birth_date")
     private Date birthDate;
 
-    @Column(name = "defaultAccount")
+    @Column(name = "default_account")
     private long prefferedAccount;
 
     public ClientSet() {}

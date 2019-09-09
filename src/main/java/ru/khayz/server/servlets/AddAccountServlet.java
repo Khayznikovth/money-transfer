@@ -3,8 +3,8 @@ package ru.khayz.server.servlets;
 import ru.khayz.ms.Address;
 import ru.khayz.ms.CmdSystem;
 import ru.khayz.ms.cmd.ToServerCmd;
-import ru.khayz.ms.cmd.db.AddToAccountToDbCmd;
-import ru.khayz.ms.cmd.server.AddToAccountToServerCmd;
+import ru.khayz.ms.cmd.db.AddAccountToDbCmd;
+import ru.khayz.ms.cmd.server.AddAccountToServerCmd;
 
 import javax.servlet.AsyncContext;
 import javax.servlet.ServletException;
@@ -14,11 +14,11 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class AddToAccountServlet extends CommonServlet {
-    private static final String ERROR_TEMPLATE = "AddToAccountResponseError.xml";
-    private static final String SUCCESS_TEMPLATE = "AddToAccountResponse.xml";
+public class AddAccountServlet extends CommonServlet {
+    private static final String ERROR_TEMPLATE = "AddAccountResponseError.xml";
+    private static final String SUCCESS_TEMPLATE = "AddAccountResponse.xml";
 
-    public AddToAccountServlet(CmdSystem cs, Address dbAddress) {
+    public AddAccountServlet(CmdSystem cs, Address dbAddress) {
         super(cs, dbAddress);
     }
 
@@ -26,10 +26,12 @@ public class AddToAccountServlet extends CommonServlet {
     public void processResponse(ToServerCmd cmd) {
         AsyncContext context = cmd.getContext();
         HttpServletResponse resp = (HttpServletResponse) context.getResponse();
-        AddToAccountToServerCmd respCmd = (AddToAccountToServerCmd) cmd;
+        AddAccountToServerCmd respCmd = (AddAccountToServerCmd) cmd;
+
         Map<String, Object> varsMap = new HashMap<>();
         if (ToServerCmd.ResultCode.SUCCESS.equals(respCmd.getResult())) {
-            varsMap.put("message", respCmd.getMessage());
+            varsMap.put("id", respCmd.getAccId());
+
             try {
                 ServletUtils.createResponse(resp, SUCCESS_TEMPLATE, varsMap);
             } catch (IOException e) {
@@ -48,36 +50,36 @@ public class AddToAccountServlet extends CommonServlet {
 
     @Override
     public String getUrl() {
-        return "/addToAccount";
+        return "/addAccount";
     }
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    public void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
             resp.setContentType("text/html;charset=utf-8");
-            long id;
-            long amount;
-
+            long clientId;
             try {
-                id = Long.valueOf(req.getParameter("account_id"));
-                amount = Long.valueOf(req.getParameter("amount"));
-                if (id < 0) {
-                    throw new IllegalArgumentException("Invalid account id set");
+                String clientIdString = req.getParameter("client_id");
+                if (clientIdString == null || clientIdString.isEmpty()) {
+                    ServletUtils.createErrorMessage(resp, ERROR_TEMPLATE, "Client Id should be set");
+                    return;
                 }
-            } catch (IllegalArgumentException e) {
+                clientId = Long.valueOf(clientIdString);
+            } catch (NumberFormatException e) {
                 e.printStackTrace();
-                ServletUtils.createErrorMessage(resp, ERROR_TEMPLATE, "Invalid input parameter: " + e.getMessage());
+                ServletUtils.createErrorMessage(resp, ERROR_TEMPLATE, "Invalid client_id");
                 return;
             }
 
-            final AsyncContext context = req.startAsync();
+            AsyncContext context = req.startAsync();
             context.setTimeout(3000);
             Runnable sendReq = () -> {
-                AddToAccountToDbCmd cmd = new AddToAccountToDbCmd(address, dbAddress, context, id, amount);
+                AddAccountToDbCmd cmd = new AddAccountToDbCmd(address, dbAddress, context, clientId);
                 cs.sendCmd(cmd);
             };
             context.start(sendReq);
         } catch (Exception e) {
+            e.printStackTrace();
             ServletUtils.createInternalErrorMessage(resp);
         }
     }

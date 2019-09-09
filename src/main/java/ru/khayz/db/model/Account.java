@@ -9,7 +9,7 @@ import java.util.Random;
  */
 @Entity
 @Table(name = "accounts")
-public class AccountSet implements Serializable {
+public class Account implements Serializable {
     private static final long serialVersionUID = -6389183881984468625L;
 
     @Id
@@ -26,14 +26,14 @@ public class AccountSet implements Serializable {
     @Column(name = "account_number", nullable = false, unique = true, precision = 20)
     private String accountNumber;
 
-    public AccountSet() {}
+    public Account() {}
 
-    public AccountSet(long clientId, String account_number) {
+    public Account(long clientId, String account_number) {
         this.clientId = clientId;
         this.accountNumber = account_number;
     }
 
-    public AccountSet(long clientId) {
+    public Account(long clientId) {
         this.id = -1;
         this.clientId = clientId;
         this.accountNumber = generateAccountNumber();
@@ -75,5 +75,16 @@ public class AccountSet implements Serializable {
 
     public void setAccountNumber(String accountNumber) {
         this.accountNumber = accountNumber;
+    }
+
+    @Override
+    public String toString() {
+        String template = "<account>" +
+                "<id>%d</id>\r\n" +
+                "    <client_id>%d</client_id>\r\n" +
+                "    <amount>%d</amount>\r\n" +
+                "    <account_number>%s</account_number>\r\n" +
+                "</account>\r\n";
+        return String.format(template, id, clientId, amount, accountNumber);
     }
 }

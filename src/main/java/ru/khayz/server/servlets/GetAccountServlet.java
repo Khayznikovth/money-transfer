@@ -1,10 +1,11 @@
 package ru.khayz.server.servlets;
 
+import ru.khayz.db.model.Account;
 import ru.khayz.ms.Address;
 import ru.khayz.ms.CmdSystem;
 import ru.khayz.ms.cmd.ToServerCmd;
-import ru.khayz.ms.cmd.db.AddToAccountToDbCmd;
-import ru.khayz.ms.cmd.server.AddToAccountToServerCmd;
+import ru.khayz.ms.cmd.db.GetAccountToDbCmd;
+import ru.khayz.ms.cmd.server.GetAccountToServerCmd;
 
 import javax.servlet.AsyncContext;
 import javax.servlet.ServletException;
@@ -14,11 +15,11 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class AddToAccountServlet extends CommonServlet {
-    private static final String ERROR_TEMPLATE = "AddToAccountResponseError.xml";
-    private static final String SUCCESS_TEMPLATE = "AddToAccountResponse.xml";
+public class GetAccountServlet extends CommonServlet {
+    private static final String ERROR_TEMPLATE = "GetAccountResponseError.xml";
+    private static final String SUCCESS_TEMPLATE = "GetAccountResponse.xml";
 
-    public AddToAccountServlet(CmdSystem cs, Address dbAddress) {
+    public GetAccountServlet(CmdSystem cs, Address dbAddress) {
         super(cs, dbAddress);
     }
 
@@ -26,10 +27,14 @@ public class AddToAccountServlet extends CommonServlet {
     public void processResponse(ToServerCmd cmd) {
         AsyncContext context = cmd.getContext();
         HttpServletResponse resp = (HttpServletResponse) context.getResponse();
-        AddToAccountToServerCmd respCmd = (AddToAccountToServerCmd) cmd;
+        GetAccountToServerCmd respCmd = (GetAccountToServerCmd) cmd;
         Map<String, Object> varsMap = new HashMap<>();
         if (ToServerCmd.ResultCode.SUCCESS.equals(respCmd.getResult())) {
-            varsMap.put("message", respCmd.getMessage());
+            Account account = respCmd.getAccount();
+            varsMap.put("id", account.getId());
+            varsMap.put("client_id", account.getClientId());
+            varsMap.put("amount", account.getAmount());
+            varsMap.put("account_number", account.getAccountNumber());
             try {
                 ServletUtils.createResponse(resp, SUCCESS_TEMPLATE, varsMap);
             } catch (IOException e) {
@@ -48,7 +53,7 @@ public class AddToAccountServlet extends CommonServlet {
 
     @Override
     public String getUrl() {
-        return "/addToAccount";
+        return "/getAccount";
     }
 
     @Override
@@ -56,24 +61,17 @@ public class AddToAccountServlet extends CommonServlet {
         try {
             resp.setContentType("text/html;charset=utf-8");
             long id;
-            long amount;
-
             try {
-                id = Long.valueOf(req.getParameter("account_id"));
-                amount = Long.valueOf(req.getParameter("amount"));
-                if (id < 0) {
-                    throw new IllegalArgumentException("Invalid account id set");
-                }
-            } catch (IllegalArgumentException e) {
-                e.printStackTrace();
-                ServletUtils.createErrorMessage(resp, ERROR_TEMPLATE, "Invalid input parameter: " + e.getMessage());
+                id = Long.valueOf(req.getParameter("id"));
+            } catch (NumberFormatException e) {
+                ServletUtils.createErrorMessage(resp, ERROR_TEMPLATE, e.getMessage());
                 return;
             }
 
             final AsyncContext context = req.startAsync();
             context.setTimeout(3000);
             Runnable sendReq = () -> {
-                AddToAccountToDbCmd cmd = new AddToAccountToDbCmd(address, dbAddress, context, id, amount);
+                GetAccountToDbCmd cmd = new GetAccountToDbCmd(address, dbAddress, context, id);
                 cs.sendCmd(cmd);
             };
             context.start(sendReq);

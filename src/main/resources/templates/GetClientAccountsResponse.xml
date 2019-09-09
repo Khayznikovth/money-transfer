@@ -1,0 +1,5 @@
+<GetClientAccountsResponse>
+    <#list accounts as account>
+        ${account}
+    </#list>
+</GetClientAccountsResponse>

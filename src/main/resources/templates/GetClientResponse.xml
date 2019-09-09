@@ -1,0 +1,7 @@
+<GetClientResponse>
+    <Id>${id}</Id>
+    <Name>${name}</Name>
+    <Phone>${phone}</Phone>
+    <BirthDate>${birth_date}</BirthDate>
+    <PrefferedAccount>${preffered_account}</PrefferedAccount>
+</GetClientResponse>

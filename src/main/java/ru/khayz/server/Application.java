@@ -11,13 +11,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.khayz.db.DbService;
 import ru.khayz.db.DbServiceImpl;
-import ru.khayz.server.servlets.AddToAccountServlet;
-import ru.khayz.server.servlets.CheckAmountServlet;
-import ru.khayz.server.servlets.SendToClientServlet;
+import ru.khayz.ms.CmdSystem;
+import ru.khayz.server.servlets.*;
 
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
 public class Application {
@@ -38,7 +39,6 @@ public class Application {
     }
 
     private static Properties serverProperties;
-    private static DbService dbService;
 
     Application() throws ParameterException{
         logger = LoggerFactory.getLogger(Application.class);
@@ -56,12 +56,11 @@ public class Application {
             ex.printStackTrace();
         }
 
-        dbService = new DbServiceImpl();
+        CmdSystem cs = new CmdSystem();
+        DbService db = new DbServiceImpl(cs);
 
-        initiateDatabase();
-
-        Server server = new Server(main.port);
-        initServlets(server);
+        MoneyTransferServer server = new MoneyTransferServer(main.port, cs, db);
+        server.startThreads();
 
         server.start();
         server.join();
@@ -71,24 +70,30 @@ public class Application {
         return serverProperties.getProperty(key);
     }
 
-    public static DbService getDbService() {
-        return dbService;
-    }
-    /**
-     * Made only for testing purposes. Not applicable for use on Production
-     */
-    private static void initiateDatabase() {
-    }
-
-    /**
-     *
-     * @param server
-     */
     private static void initServlets(Server server) {
         ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
-        context.addServlet(new ServletHolder(new AddToAccountServlet()), "/addToAccount");
-        context.addServlet(new ServletHolder(new CheckAmountServlet()),  "/checkAmount");
-        context.addServlet(new ServletHolder(new SendToClientServlet()), "/sendToClient");
+        CmdSystem cs = new CmdSystem();
+        DbService db = new DbServiceImpl(cs);
+        cs.addQueue(db.getAddress());
+
+        List<CommonServlet> servlets = new ArrayList<>();
+        servlets.add(new AddAccountServlet(cs, db.getAddress()));
+        servlets.add(new AddClientServlet(cs, db.getAddress()));
+        servlets.add(new AddToAccountServlet(cs, db.getAddress()));
+        servlets.add(new CheckAmountServlet(cs, db.getAddress()));
+        servlets.add(new GetAccountServlet(cs, db.getAddress()));
+        servlets.add(new GetClientAccountsServlet(cs, db.getAddress()));
+        servlets.add(new GetClientServlet(cs, db.getAddress()));
+        servlets.add(new SendAccountToAccountServlet(cs, db.getAddress()));
+        servlets.add(new SendClientToClientServlet(cs, db.getAddress()));
+
+        new Thread(db).start();
+        for (CommonServlet servlet: servlets) {
+            context.addServlet(new ServletHolder(servlet), servlet.getUrl());
+            cs.addQueue(servlet.getAddress());
+            new Thread(servlet).start();
+        }
+
         server.setHandler(context);
     }
 }

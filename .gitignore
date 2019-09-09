@@ -1,5 +1,6 @@
 # Compiled class file
 *.class
+target/
 
 # Log file
 *.log
@@ -23,6 +24,9 @@
 hs_err_pid*
 
 # Workspace files #
-
 .idea/
 *.iml
+target/
+
+# H2 Database Files #
+h2db.mv.db

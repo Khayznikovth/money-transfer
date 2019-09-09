@@ -10,8 +10,9 @@ import java.util.Objects;
  */
 @Entity
 @Table(name = "clients")
-public class ClientSet implements Serializable {
+public class Client implements Serializable {
     private static final long serialVersionUID = -4203310066700861288L;
+    public static final long NO_PREFFERED_ACCOUNT = -1;
 
     @Id
     @Column(name = "id")
@@ -28,19 +29,31 @@ public class ClientSet implements Serializable {
     private Date birthDate;
 
     @Column(name = "default_account")
-    private long prefferedAccount;
+    private long prefferedAccount = NO_PREFFERED_ACCOUNT;
 
-    public ClientSet() {}
+    public Client() {}
 
-    public ClientSet(String name) {
+    public Client(String name) throws IllegalArgumentException {
         this.id = -1;
+        if (name == null || name.isEmpty()) {
+            throw new IllegalArgumentException("Client name is empty");
+        }
         this.name = name;
     }
 
-    public ClientSet(long id, String name, String phone) {
-        this.id = id;
+    public Client(String name, String phone, Date birthDate) throws IllegalArgumentException {
+        this.id = -1;
+        if (name == null || name.isEmpty()) {
+            throw new IllegalArgumentException("Client name is empty");
+        }
         this.name = name;
         this.phone = phone;
+        if (birthDate != null) {
+            if (birthDate.compareTo(new Date(System.currentTimeMillis())) >= 0) {
+                throw new IllegalArgumentException("Client birth date is incorrect");
+            }
+            this.birthDate = birthDate;
+        }
     }
 
     public long getId() {
@@ -87,7 +100,7 @@ public class ClientSet implements Serializable {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        ClientSet that = (ClientSet) o;
+        Client that = (Client) o;
         return id == that.id &&
                 name.equals(that.name) &&
                 Objects.equals(birthDate, that.birthDate);

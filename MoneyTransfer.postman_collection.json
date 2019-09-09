@@ -1,0 +1,342 @@
+{
+	"info": {
+		"_postman_id": "9a1530c5-2587-4ea5-910f-2bb9cdf0a75a",
+		"name": "MoneyTransfer",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "checkAmount",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/checkAmount?id=1&amount=200",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"checkAmount"
+					],
+					"query": [
+						{
+							"key": "id",
+							"value": "1"
+						},
+						{
+							"key": "amount",
+							"value": "200"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "addClient",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/addClient?name=Fedor Khayznikov&phone=8(915)086-43-59&birth_date=1996-07-01",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"addClient"
+					],
+					"query": [
+						{
+							"key": "name",
+							"value": "Fedor Khayznikov"
+						},
+						{
+							"key": "phone",
+							"value": "8(915)086-43-59"
+						},
+						{
+							"key": "birth_date",
+							"value": "1996-07-01"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "addClient2",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/addClient?name=Margarita Plotkina&phone=8(916)xxx-xx-xx&birth_date=1995-05-15",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"addClient"
+					],
+					"query": [
+						{
+							"key": "name",
+							"value": "Margarita Plotkina"
+						},
+						{
+							"key": "phone",
+							"value": "8(916)xxx-xx-xx"
+						},
+						{
+							"key": "birth_date",
+							"value": "1995-05-15"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getClient",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/getClient?id=1",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"getClient"
+					],
+					"query": [
+						{
+							"key": "id",
+							"value": "1"
+						},
+						{
+							"key": "name",
+							"value": "",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getAccount",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/getAccount?id=1",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"getAccount"
+					],
+					"query": [
+						{
+							"key": "id",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "addToAccount",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/addToAccount?account_id=1&amount=150",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"addToAccount"
+					],
+					"query": [
+						{
+							"key": "account_id",
+							"value": "1"
+						},
+						{
+							"key": "amount",
+							"value": "150"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "addAccount",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/addAccount?client_id=1",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"addAccount"
+					],
+					"query": [
+						{
+							"key": "client_id",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "addAccount2",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/addAccount?client_id=2",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"addAccount"
+					],
+					"query": [
+						{
+							"key": "client_id",
+							"value": "2"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getClientAccounts",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/getClientAccounts?client_id=1",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"getClientAccounts"
+					],
+					"query": [
+						{
+							"key": "client_id",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getClientAccounts2",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/getClientAccounts?client_id=2",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"getClientAccounts"
+					],
+					"query": [
+						{
+							"key": "client_id",
+							"value": "2"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "sendClientToClient",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/sendClientToClient?id_from=1&id_to=2&amount=50",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"sendClientToClient"
+					],
+					"query": [
+						{
+							"key": "id_from",
+							"value": "1"
+						},
+						{
+							"key": "id_to",
+							"value": "2"
+						},
+						{
+							"key": "amount",
+							"value": "50"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "sendAccountToAccount",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/sendAccountToAccount?id_from=1&id_to=2&amount=30",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"sendAccountToAccount"
+					],
+					"query": [
+						{
+							"key": "id_from",
+							"value": "1"
+						},
+						{
+							"key": "id_to",
+							"value": "2"
+						},
+						{
+							"key": "amount",
+							"value": "30"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

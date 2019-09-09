@@ -1,0 +1,3 @@
+<GetClientResponse>
+    <ErrorMessage>${message}</ErrorMessage>
+</GetClientResponse>

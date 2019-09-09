@@ -1,0 +1,3 @@
+<SendAccountToAccountResponse>
+    <ErrorMessage>${message}</ErrorMessage>
+</SendAccountToAccountResponse>

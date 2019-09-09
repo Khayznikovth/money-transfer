@@ -1,0 +1,3 @@
+<SendAccountToAccountResponse>
+    <Result>${message}</Result>
+</SendAccountToAccountResponse>
